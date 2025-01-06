@@ -1,0 +1,204 @@
+@font-face {
+  font-family: "Roboto";
+  src: url(assets/Roboto/Roboto-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Bold";
+  src: url(assets/Roboto/Roboto-Bold.ttf) format("truetype");
+}
+
+html,
+body {
+  overflow: auto;
+}
+
+::-webkit-scrollbar {
+  width: 0px; /* Versteckt die vertikale Scrollbar */
+}
+
+body {
+  background-color: #071820;
+  font-family: "Roboto-Bold";
+  margin: 0 auto;
+  color: #ffffff;
+  max-height: 100vh;
+}
+
+header {
+  background-color: #0a222c;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+}
+
+.max-width {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 28px;
+  padding-right: 28px;
+  height: 90px;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+h1 {
+  font-size: 28px;
+  color: #eeeeee;
+}
+
+.navbar img {
+  height: 54px;
+  padding-right: 8px;
+}
+
+.header-input input {
+  padding: 14px;
+  border-radius: 10px;
+  border: transparent;
+  background-color: #0f2c38;
+  color: #eeeeee;
+  font-size: 14px;
+}
+
+.header-input input:focus {
+  outline: none;
+  border: 1px solid #0f2c38;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header-input input::placeholder {
+  color: #eeeeee;
+  font-size: 14px;
+}
+
+/* Loading-Symbol */
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(7, 24, 32, 0.8);
+  z-index: 9999; /* Damit es über allem anderen liegt */
+  color: #ffffff;
+  text-align: center;
+  font-size: 28px;
+}
+
+.loading-logo {
+  width: 80px;
+  height: 80px;
+  animation: rotate 2s linear infinite;
+  margin-bottom: 20px;
+  margin-right: 10px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main Content */
+
+#content {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  padding: 20px;
+  max-width: 1440px; /* Maximale Breite */
+  margin: 0 auto; /* Zentrieren */
+  overflow: auto;
+  margin-top: 90px;
+}
+
+.pokemon-card {
+  background-color: #0f2c38;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pokemon-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.pokemon-card h2 {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.load-more-con {
+  display: flex;
+  justify-content: center;
+}
+
+.load-more {
+  background-color: #0f2c38;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 100px;
+}
+
+.load-more:hover {
+  background-color: #0d2631;
+}
+
+/* Footer */
+
+footer {
+  margin-top: 138px;
+  background-color: #0a222c;
+  height: 8vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #eeeeee;
+  position: fixed;
+  bottom: 0;
+}
+
+@media (max-width: 1024px) {
+  #content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  #content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  #content {
+    grid-template-columns: 1fr;
+  }
+}

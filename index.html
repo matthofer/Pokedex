@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex</title>
+
+    <link rel="icon" type="image.png" href="assets/pokelogo_black.png" />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="loading-screen" class="loading-screen">
+      <img
+        src="assets/pokelogo_black.svg"
+        alt="Pokémon Logo"
+        class="loading-logo"
+      />
+      <p>Loading...</p>
+    </div>
+
+    <header>
+      <div class="header-content max-width">
+        <div class="navbar">
+          <img src="assets/pokelogo_black.svg" alt="Logo" />
+          <h1>Pokedex</h1>
+        </div>
+        <div class="header-input">
+          <input type="text" placeholder="Find your Pokémon..." />
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="content" class="content"></div>
+      <div class="load-more-con">
+        <button id="load-more" class="load-more">Load More Pokémon</button>
+      </div>
+    </main>
+
+    <footer>
+      <div>Created by Matthias</div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
