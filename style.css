@@ -199,6 +199,7 @@ h1 {
   max-width: 400px;
   width: 90%;
   color: white;
+  height: 55vh;
 }
 
 .overlay-content img {
@@ -283,6 +284,47 @@ h1 {
   font-size: 14px;
   list-style: none;
   padding-left: 0;
+}
+
+/* Tabs Container */
+.overlay-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Tab Buttons */
+.tab-button {
+  background-color: #0f2c38;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tab-button.active {
+  background-color: #ff6347; /* Farbe für aktive Tabs */
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content:not(.hidden) {
+  display: block;
+  text-align: center;
+}
+
+/* Evolution Images */
+.evolution-chain img {
+  width: 100px;
+  height: 100px;
+  margin: 0 10px;
+  object-fit: contain;
 }
 
 /* Footer */
