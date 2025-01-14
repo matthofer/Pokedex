@@ -144,30 +144,86 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="tab-content about">${renderAboutContent(pokemon)}</div>
       <div class="tab-content stats hidden">${renderStatsContent(pokemon)}</div>
-      <div class="tab-content evolution hidden">${renderEvolutionContent(pokemon)}</div>
+      <div class="tab-content evolution hidden">Loading Evolution...</div>
     `;
     overlayDetails.innerHTML = tabs;
     attachTabEventListeners(pokemon);
+    loadEvolutionContent(pokemon);
   }
 
   function renderAboutContent(pokemon) {
     const height = pokemon.height * 10;
     const weight = pokemon.weight / 10;
     const abilities = pokemon.abilities.map((a) => capitalizeFirstLetter(a.ability.name)).join(", ");
-    return `<p>Height: ${height} cm</p><p>Weight: ${weight} kg</p><p>Abilities: ${abilities}</p>`;
+    return `<div class="about-content">
+                <div class="about-content-rows">
+                    <p>Height:</p><p> ${height} cm</p>
+                </div>
+                <div class="about-content-rows">
+                    <p>Weight:</p><p> ${weight} kg</p>
+                </div>
+                <div class="about-content-rows">
+                    <p>Abilities:</p><p> ${abilities}</p>
+                </div>
+            </div>`;
   }
 
   function renderStatsContent(pokemon) {
     return pokemon.stats.map((stat) => {
       const name = capitalizeFirstLetter(stat.stat.name);
       const value = stat.base_stat;
-      return `<p>${name}: <progress max="100" value="${value}"></progress> ${value}</p>`;
+      return `
+        <div class="progressbar-container">
+          <p>${name}:</p>
+          <progress class="progressbar" max="100" value="${value}"></progress>
+          <span class="progress-value">${value}</span>
+        </div>
+      `;
     }).join("");
   }
+  
 
-  function renderEvolutionContent(pokemon) {
-    return "<p>Evolution chain goes here.</p>"; // Placeholder for evolution chain logic
+  async function loadEvolutionContent(pokemon) {
+    const speciesUrl = pokemon.species.url;
+    const speciesData = await fetchData(speciesUrl);
+    const evolutionChainUrl = speciesData.evolution_chain.url;
+    const evolutionData = await fetchData(evolutionChainUrl);
+    const evolutionHtml = buildEvolutionChain(evolutionData.chain);
+    document.querySelector(".tab-content.evolution").innerHTML = evolutionHtml;
   }
+
+  async function fetchData(url) {
+    const response = await fetch(url);
+    return await response.json();
+  }
+
+  function buildEvolutionChain(chain) {
+    const stages = [];
+    let current = chain;
+    while (current) {
+      const name = capitalizeFirstLetter(current.species.name);
+      const id = extractIdFromUrl(current.species.url);
+      const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+      console.log(`Generated Image URL for ${name}: ${imgUrl}`); // Debugging: URL ausgeben
+      stages.push(`
+        <div class="evolution-stage">
+          <img src="${imgUrl}" alt="${name}" />
+          <p>${name}</p>
+        </div>
+      `);
+      current = current.evolves_to[0];
+    }
+    return `<div class="evolution-chain">${stages.join("")}</div>`;
+  }
+  
+  
+
+  function extractIdFromUrl(url) {
+    const match = url.match(/pokemon-species\/(\d+)\//); // Regex angepasst
+    return match ? match[1] : null;
+  }
+  
+  
 
   function attachTabEventListeners() {
     document.querySelectorAll(".tab-button").forEach((button) => {
