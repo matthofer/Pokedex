@@ -312,10 +312,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleSearchInput(event) {
     const query = event.target.value.trim();
+
     if (query.length >= 3) {
       hintMessage.textContent = "";
       isSearching = true;
-      loadPokemon(0, query);
+      loadPokemon(offset, query);
       loadMoreButton.style.display = "none";
     } else {
       resetSearch(query);
@@ -328,9 +329,18 @@ document.addEventListener("DOMContentLoaded", () => {
     isSearching = false;
     displayedPokemonNames.clear();
     contentDiv.innerHTML = "";
+    loadMoreButton.style.display = "none";
     offset = 0;
-    loadPokemon(offset);
-    loadMoreButton.style.display = "block";
+
+    if (query.length === 0) {
+      showLoadingAndReset();
+      loadMoreButton.style.display = "block";
+    }
+  }
+
+  function showLoadingAndReset() {
+    showLoading();
+    loadPokemon(0);
   }
 
   function addLoadedPokemon(pokemonDetails) {
@@ -338,5 +348,15 @@ document.addEventListener("DOMContentLoaded", () => {
       loadedPokemon.push(pokemonDetails);
   }
 });
+
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+
+function bottomFunction() {
+  document.body.scrollTop = 100000000;
+  document.documentElement.scrollTop = 100000000;
+}
 
 // danke, aber die eventlistener domcontentloaded funktion hat ja mehr als 14 zeilen, ist es möglich diese funktion auch auf 14 zeilen zu verkürzen ohne die funktionalität der seite zu zerstören? ggf. durch auslagern der funktionen?

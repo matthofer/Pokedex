@@ -11,10 +11,11 @@
 html,
 body {
   overflow: auto;
+  scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {
-  width: 0px; /* Versteckt die vertikale Scrollbar */
+  width: 0px;
 }
 
 body {
@@ -31,6 +32,7 @@ header {
   top: 0;
   width: 100%;
   z-index: 99;
+  filter: drop-shadow(0px 2px 10px #051218);
 }
 
 .max-width {
@@ -56,6 +58,11 @@ header {
 h1 {
   font-size: 28px;
   color: #eeeeee;
+  cursor: pointer;
+}
+
+h1:hover {
+  text-shadow: 0px 0px 2px #ffffff;
 }
 
 .navbar img {
@@ -83,12 +90,14 @@ h1 {
   font-size: 14px;
 }
 
+.header-input input:hover {
+  text-shadow: 0px 0px 2px #ffffff;
+}
+
 .hint-message {
   font-size: 12px;
   color: #cccccc;
 }
-
-/* Loading-Symbol */
 
 .loading-screen {
   position: fixed;
@@ -100,7 +109,7 @@ h1 {
   justify-content: center;
   align-items: center;
   background-color: rgba(7, 24, 32, 0.8);
-  z-index: 9999; /* Damit es über allem anderen liegt */
+  z-index: 9999;
   color: #ffffff;
   text-align: center;
   font-size: 28px;
@@ -123,15 +132,13 @@ h1 {
   }
 }
 
-/* Main Content */
-
 #content {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   padding: 20px;
-  max-width: 1440px; /* Maximale Breite */
-  margin: 0 auto; /* Zentrieren */
+  max-width: 1440px;
+  margin: 0 auto;
   overflow: auto;
   margin-top: 90px;
 }
@@ -162,7 +169,7 @@ h1 {
 }
 
 .load-more {
-  background-color: #0f2c38;
+  background-color: #0a222c;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -175,9 +182,8 @@ h1 {
 
 .load-more:hover {
   transform: scale(1.05);
+  text-shadow: 0px 0px 1px #ffffff;
 }
-
-/* Overlay */
 
 .overlay {
   display: none;
@@ -243,8 +249,8 @@ h1 {
   display: none;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.7); /* Verdunkelung des Hintergrunds */
-  z-index: 1000; /* Damit es über allem anderen liegt */
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
 }
 
 .overlay-content {
@@ -287,14 +293,12 @@ h1 {
   padding-left: 0;
 }
 
-/* Tabs Container */
 .overlay-tabs {
   display: flex;
   justify-content: center;
   margin-bottom: 10px;
 }
 
-/* Overlay Styles */
 #pokemon-overlay {
   position: fixed;
   top: 0;
@@ -341,7 +345,7 @@ h1 {
 }
 
 .pokemon-card {
-  color: #fff; /* Weiße Schrift für Kontrast */
+  color: #fff;
   border-radius: 8px;
   padding: 10px;
   text-align: center;
@@ -361,7 +365,6 @@ h1 {
   text-transform: capitalize;
 }
 
-/* Tab Buttons */
 .tab-button {
   background-color: #0f2c38;
   color: white;
@@ -374,14 +377,13 @@ h1 {
 }
 
 .tab-button.active {
-  background-color: #ff6347; /* Farbe für aktive Tabs */
+  background-color: #ff6347;
 }
 
 .tab-button:hover {
   text-shadow: 0px 0px 2px #ffffff;
 }
 
-/* Tab Content */
 .tab-content {
   display: none;
   padding-top: 10px;
@@ -414,7 +416,6 @@ h1 {
   font-size: 14px;
 }
 
-/* Stat Row */
 .stats {
   margin-left: 30px;
   margin-right: 30px;
@@ -459,30 +460,28 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px; /* Etwas Abstand zwischen den Zeilen */
+  margin-bottom: 10px;
 }
 
 .tab-content .progressbar {
-  flex-grow: 1; /* Damit die Progressbars sich ausdehnen */
-  margin-left: 10px; /* Etwas Abstand zwischen dem Text und der Progressbar */
-  height: 10px; /* Höhe der Progressbar */
+  flex-grow: 1;
+  margin-left: 10px;
+  height: 10px;
 }
 
 .tab-content .progress-value {
   font-size: 14px;
   color: white;
-  min-width: 35px; /* Stellt sicher, dass die Zahl immer Platz hat */
-  text-align: right; /* Rechtsbündige Ausrichtung */
+  min-width: 35px;
+  text-align: right;
 }
 
-/* Damit der Text korrekt linksbündig bleibt */
 .progressbar-container p {
   margin: 0;
-  width: 200px; /* Breite des Textes, je nach Bedarf anpassbar */
+  width: 200px;
   text-align: left;
 }
 
-/* Evolution Images */
 .evolution-chain {
   display: flex;
   flex-direction: row;
@@ -537,8 +536,6 @@ h1 {
   filter: drop-shadow(0px 0px 3px #ffffff);
 }
 
-/* Footer */
-
 footer {
   margin-top: 138px;
   background-color: #0a222c;
@@ -550,6 +547,12 @@ footer {
   color: #eeeeee;
   position: fixed;
   bottom: 0;
+  filter: drop-shadow(0px -2px 10px #051218);
+}
+
+.footer-text:hover {
+  text-shadow: 0px 0px 2px #ffffff;
+  cursor: pointer;
 }
 
 @media (max-width: 1024px) {
