@@ -1,6 +1,26 @@
-// Globales Array für alle geladenen Pokémon
 let loadedPokemon = [];
 let currentPokemonIndex = 0;
+
+const typeColors = {
+  fire: "#F08030",
+  water: "#6890F0",
+  grass: "#78C850",
+  bug: "#A8B820",
+  electric: "#F8D030",
+  rock: "#B8A038",
+  ground: "#E0C068",
+  psychic: "#F85888",
+  ice: "#98D8D8",
+  dragon: "#7038F8",
+  dark: "#705848",
+  fairy: "#EE99AC",
+  steel: "#B8B8D0",
+  fighting: "#C03028",
+  ghost: "#705898",
+  normal: "#A8A878",
+  poison: "#A040A0",
+  flying: "#A890F0",
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const contentDiv = document.getElementById("content");
@@ -14,24 +34,40 @@ document.addEventListener("DOMContentLoaded", () => {
   const overlayDetails = document.getElementById("overlay-details");
   const closeOverlayButton = document.getElementById("close-overlay");
   const emptyResultsMessage = document.createElement("div");
-
-  // Nachdem die DOM-Inhalte geladen sind, fügen wir Event-Listener für die Buttons hinzu
-  document
-    .getElementById("previous-button")
-    .addEventListener("click", previousPokemonDetails);
-  document
-    .getElementById("next-button")
-    .addEventListener("click", nextPokemonDetails);
-
   let allPokemon = [];
   let displayedPokemonNames = new Set();
-  let offset = 0;
-  const limit = 25;
-  let isSearching = false;
-  let allPokemonLoaded = false;
+  let offset = 0,
+    limit = 25,
+    isSearching = false,
+    allPokemonLoaded = false;
 
-  initializeHintMessage();
-  initializeEmptyResultsMessage();
+  initPage();
+
+  function initPage() {
+    initEventListeners();
+    initializeHintMessage();
+    initializeEmptyResultsMessage();
+    loadPokemon(offset);
+  }
+
+  function initEventListeners() {
+    document
+      .getElementById("previous-button")
+      .addEventListener("click", previousPokemonDetails);
+    document
+      .getElementById("next-button")
+      .addEventListener("click", nextPokemonDetails);
+    closeOverlayButton.addEventListener("click", closeOverlay);
+    overlay.addEventListener(
+      "click",
+      (e) => e.target === overlay && closeOverlay()
+    );
+    inputField.addEventListener("input", handleSearchInput);
+    loadMoreButton.addEventListener("click", () => {
+      offset += limit;
+      loadPokemon(offset);
+    });
+  }
 
   function initializeHintMessage() {
     hintMessage.classList.add("hint-message");
@@ -66,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadAllPokemon() {
     if (allPokemonLoaded) return;
-
     const data = await fetchPokemon(0, 1000);
     allPokemon.push(...data.results);
     allPokemonLoaded = true;
@@ -89,24 +124,28 @@ document.addEventListener("DOMContentLoaded", () => {
   function createPokemonCard(pokemonDetails) {
     const pokemonCard = document.createElement("div");
     pokemonCard.classList.add("pokemon-card");
-    pokemonCard.innerHTML = ` 
+    const types = pokemonDetails.types.map((type) =>
+      capitalize(type.type.name)
+    );
+    const primaryType = pokemonDetails.types[0].type.name;
+    pokemonCard.style.backgroundColor = typeColors[primaryType] || "#f0f0f0";
+    pokemonCard.innerHTML = `
       <div class="pokemon-number">#${pokemonDetails.id
         .toString()
         .padStart(3, "0")}</div>
       <img src="${
         pokemonDetails.sprites.other["official-artwork"].front_default
       }" alt="${pokemonDetails.name}" />
-      <h2>${capitalizeFirstLetter(pokemonDetails.name)}</h2>
+      <h2>${capitalize(pokemonDetails.name)}</h2>
+      <p class="pokemon-types">${types.join(", ")}</p>
     `;
     pokemonCard.addEventListener("click", () => showOverlay(pokemonDetails));
     contentDiv.appendChild(pokemonCard);
     displayedPokemonNames.add(pokemonDetails.name);
-
-    // Füge das geladene Pokémon zum globalen Array hinzu
     addLoadedPokemon(pokemonDetails);
   }
 
-  function capitalizeFirstLetter(string) {
+  function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
@@ -126,11 +165,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const pokemonList = filter
         ? await filterPokemon(filter)
         : await fetchPaginatedPokemon(offset);
-      if (!filter) {
-        await renderPokemonCards(pokemonList);
-      } else {
+      if (filter) {
         contentDiv.innerHTML = "";
         await renderPokemon(pokemonList, Boolean(filter));
+      } else {
+        await renderPokemonCards(pokemonList);
       }
     } finally {
       hideLoading();
@@ -154,36 +193,23 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPokemonIndex = loadedPokemon.findIndex((p) => p.id === pokemon.id);
     overlay.style.display = "flex";
     overlayImage.src = pokemon.sprites.other["official-artwork"].front_default;
-    overlayName.textContent = capitalizeFirstLetter(pokemon.name);
+    overlayName.textContent = capitalize(pokemon.name);
     renderOverlayTabs(pokemon);
-
-    // Buttons ein-/ausblenden, aber die Buttons bleiben immer sichtbar
-    document.getElementById("previous-button").style.display = "inline-block";
-    document.getElementById("next-button").style.display = "inline-block";
   }
 
   function nextPokemonDetails() {
-    if (currentPokemonIndex < loadedPokemon.length - 1) {
-      currentPokemonIndex++;
-    } else {
-      // Schleife zum ersten Pokémon
-      currentPokemonIndex = 0;
-    }
+    currentPokemonIndex = (currentPokemonIndex + 1) % loadedPokemon.length;
     showOverlay(loadedPokemon[currentPokemonIndex]);
   }
 
   function previousPokemonDetails() {
-    if (currentPokemonIndex > 0) {
-      currentPokemonIndex--;
-    } else {
-      // Schleife zum letzten Pokémon
-      currentPokemonIndex = loadedPokemon.length - 1;
-    }
+    currentPokemonIndex =
+      (currentPokemonIndex - 1 + loadedPokemon.length) % loadedPokemon.length;
     showOverlay(loadedPokemon[currentPokemonIndex]);
   }
 
   function renderOverlayTabs(pokemon) {
-    const tabs = `
+    overlayDetails.innerHTML = `
       <div class="overlay-tabs">
         <button class="tab-button active" data-tab="about">About</button>
         <button class="tab-button" data-tab="stats">Stats</button>
@@ -193,52 +219,46 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="tab-content stats hidden">${renderStatsContent(pokemon)}</div>
       <div class="tab-content evolution hidden">Loading Evolution...</div>
     `;
-    overlayDetails.innerHTML = tabs;
-    attachTabEventListeners(pokemon);
+    attachTabEventListeners();
     loadEvolutionContent(pokemon);
   }
 
   function renderAboutContent(pokemon) {
-    const height = pokemon.height * 10;
-    const weight = pokemon.weight / 10;
-    const abilities = pokemon.abilities
-      .map((a) => capitalizeFirstLetter(a.ability.name))
+    const types = pokemon.types
+      .map((type) => capitalize(type.type.name))
       .join(", ");
-    return `<div class="about-content">
-                <div class="about-content-rows">
-                    <p>Height:</p><p> ${height} cm</p>
-                </div>
-                <div class="about-content-rows">
-                    <p>Weight:</p><p> ${weight} kg</p>
-                </div>
-                <div class="about-content-rows">
-                    <p>Abilities:</p><p> ${abilities}</p>
-                </div>
-            </div>`;
+    const height = pokemon.height * 10,
+      weight = pokemon.weight / 10;
+    const abilities = pokemon.abilities
+      .map((a) => capitalize(a.ability.name))
+      .join(", ");
+    return `
+      <div class="about-content">
+        <div class="about-content-rows"><p>Type:</p><p>${types}</p></div>
+        <div class="about-content-rows"><p>Height:</p><p>${height} cm</p></div>
+        <div class="about-content-rows"><p>Weight:</p><p>${weight} kg</p></div>
+        <div class="about-content-rows"><p>Abilities:</p><p>${abilities}</p></div>
+      </div>`;
   }
 
   function renderStatsContent(pokemon) {
     return pokemon.stats
       .map((stat) => {
-        const name = capitalizeFirstLetter(stat.stat.name);
-        const value = stat.base_stat;
-        const maxValue = Math.max(100, value);
+        const name = capitalize(stat.stat.name),
+          value = stat.base_stat;
         return `
-        <div class="progressbar-container">
-          <p>${name}:</p>
-          <progress class="progressbar" max="${maxValue}" value="${value}"></progress>
-          <span class="progress-value">${value}</span>
-        </div>
-      `;
+          <div class="progressbar-container">
+            <p>${name}:</p>
+            <progress class="progressbar" max="100" value="${value}"></progress>
+            <span class="progress-value">${value}</span>
+          </div>`;
       })
       .join("");
   }
 
   async function loadEvolutionContent(pokemon) {
-    const speciesUrl = pokemon.species.url;
-    const speciesData = await fetchData(speciesUrl);
-    const evolutionChainUrl = speciesData.evolution_chain.url;
-    const evolutionData = await fetchData(evolutionChainUrl);
+    const speciesData = await fetchData(pokemon.species.url);
+    const evolutionData = await fetchData(speciesData.evolution_chain.url);
     const evolutionHtml = buildEvolutionChain(evolutionData.chain);
     document.querySelector(".tab-content.evolution").innerHTML = evolutionHtml;
   }
@@ -250,24 +270,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function buildEvolutionChain(chain) {
     const stages = [];
-    let current = chain;
-    while (current) {
-      const name = capitalizeFirstLetter(current.species.name);
-      const id = extractIdFromUrl(current.species.url);
-      const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+    while (chain) {
+      const name = capitalize(chain.species.name);
+      const id = extractIdFromUrl(chain.species.url);
       stages.push(`
         <div class="evolution-stage">
-          <img src="${imgUrl}" alt="${name}" />
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" alt="${name}" />
           <p>${name}</p>
-        </div>
-      `);
-      current = current.evolves_to[0];
+        </div>`);
+      chain = chain.evolves_to[0];
     }
     return `<div class="evolution-chain">${stages.join("")}</div>`;
   }
 
   function extractIdFromUrl(url) {
-    const match = url.match(/pokemon-species\/(\d+)\//); // Regex angepasst
+    const match = url.match(/pokemon-species\/(\d+)\//);
     return match ? match[1] : null;
   }
 
@@ -293,17 +310,17 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.style.display = "none";
   }
 
-  inputField.addEventListener("input", async (event) => {
+  function handleSearchInput(event) {
     const query = event.target.value.trim();
     if (query.length >= 3) {
       hintMessage.textContent = "";
       isSearching = true;
-      await loadPokemon(0, query);
+      loadPokemon(0, query);
       loadMoreButton.style.display = "none";
     } else {
       resetSearch(query);
     }
-  });
+  }
 
   function resetSearch(query) {
     hintMessage.textContent =
@@ -316,41 +333,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMoreButton.style.display = "block";
   }
 
-  loadMoreButton.addEventListener("click", () => {
-    offset += limit;
-    loadPokemon(offset);
-  });
-
-  closeOverlayButton.addEventListener("click", closeOverlay);
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) closeOverlay();
-  });
-
-  loadPokemon(offset);
+  function addLoadedPokemon(pokemonDetails) {
+    if (!loadedPokemon.some((p) => p.id === pokemonDetails.id))
+      loadedPokemon.push(pokemonDetails);
+  }
 });
 
-// Funktion, um ein neues Pokémon zum globalen Array hinzuzufügen
-function addLoadedPokemon(pokemonDetails) {
-  if (!loadedPokemon.some((p) => p.id === pokemonDetails.id)) {
-    loadedPokemon.push(pokemonDetails);
-  }
-}
-
-async function fetchSpecificPokemonDetails(pokemonIdentifier) {
-  try {
-    // API-URL für ein spezifisches Pokémon (Name oder ID)
-    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonIdentifier.toLowerCase()}`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(
-        `Pokémon mit der ID oder dem Namen "${pokemonIdentifier}" wurde nicht gefunden.`
-      );
-    }
-
-    const pokemonDetails = await response.json();
-    return pokemonDetails;
-  } catch (error) {
-    return null;
-  }
-}
+// danke, aber die eventlistener domcontentloaded funktion hat ja mehr als 14 zeilen, ist es möglich diese funktion auch auf 14 zeilen zu verkürzen ohne die funktionalität der seite zu zerstören? ggf. durch auslagern der funktionen?
