@@ -358,5 +358,3 @@ function bottomFunction() {
   document.body.scrollTop = 100000000;
   document.documentElement.scrollTop = 100000000;
 }
-
-// danke, aber die eventlistener domcontentloaded funktion hat ja mehr als 14 zeilen, ist es möglich diese funktion auch auf 14 zeilen zu verkürzen ohne die funktionalität der seite zu zerstören? ggf. durch auslagern der funktionen?
