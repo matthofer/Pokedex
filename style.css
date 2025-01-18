@@ -617,3 +617,82 @@ footer {
     background-color: rgba(0, 0, 0, 0.5);
   }
 }
+
+@media (max-height: 740px) {
+  .overlay-content h2 {
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .overlay-content {
+    height: 58vh;
+  }
+
+  #overlay-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .overlay-tabs {
+    margin-bottom: 0;
+  }
+
+  .tab-content {
+    padding-top: 5px;
+  }
+
+  .about-content-rows p {
+    margin: 0;
+  }
+}
+
+@media (max-height: 896px) {
+  #overlay-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .overlay-content h2 {
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
+
+@media (min-height: 1030px) {
+  .tab-button {
+    font-size: 16px;
+  }
+
+  .about-content-rows p {
+    font-size: 16px;
+  }
+
+  .stats {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+
+  .overlay-content {
+    height: 48vh;
+  }
+
+  .progressbar {
+    width: 78%;
+  }
+
+  .evolution {
+    margin-bottom: 18px;
+  }
+
+  .about {
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-height: 600px) {
+  .overlay-content {
+    height: 70vh;
+  }
+}
